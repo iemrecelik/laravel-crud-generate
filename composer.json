@@ -1,0 +1,24 @@
+{
+    "name": "dirim/laravel-generate-crud",
+    "description": "This package is generate crud processes on laravel for javascript and php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Emre ÇELİK",
+            "email": "iemrecelik@hotmail.com"
+        }
+    ],
+    "require": {},
+    "extra": {
+        "laravel": {
+            "providers": [
+            	"Dirim\\LvGenerateCrud\\CrudServiceProvider"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+        	"Dirim\\LvGenerateCrud\\": "src/"
+        }
+    }
+}
