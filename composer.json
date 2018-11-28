@@ -1,5 +1,5 @@
 {
-    "name": "dirim/laravel-generate-crud",
+    "name": "dirim/laravel-crud-generate",
     "description": "This package is generate crud processes on laravel for javascript and php",
     "license": "MIT",
     "authors": [
