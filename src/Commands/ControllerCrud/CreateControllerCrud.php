@@ -85,9 +85,10 @@ class CreateControllerCrud extends Command
     {
         $prefix = explode($search, $path);
 
-        if (count($prefix) > 1)
+        if (count($prefix) > 1) {
             array_pop($prefix);
-
+        }
+            
         $prefix = implode($change, $prefix);
 
         return $prefix;
@@ -102,7 +103,9 @@ class CreateControllerCrud extends Command
     {
         $this->controllerPath = $controllerPath;
         $this->controllerName = preg_replace(
-            '/(.+)\/(\w+)$/', '$2', $controllerPath
+            '/(.+)\/(\w+)$/',
+            '$2',
+            $controllerPath
         );
         
         return $this;
@@ -117,11 +120,12 @@ class CreateControllerCrud extends Command
     {
         $modelNamespacePath = explode('/', $modelPath);
         
-        if($modelNamespacePath > 1){
+        if ($modelNamespacePath > 1) {
             array_pop($modelNamespacePath);
             $modelNamespacePath = implode('\\', $modelNamespacePath);
-        }else
+        } else {
             $modelNamespacePath = '';
+        }
         
         $this->modelNamespacePath = $modelNamespacePath;
 
@@ -161,7 +165,9 @@ class CreateControllerCrud extends Command
     public function setModelVarName($modelPath)
     {
         $this->modelVarName =  preg_replace(
-            '/(.+\/)?(\w+)s$/', '$2', $modelPath
+            '/(.+\/)?(\w+)s$/',
+            '$2',
+            $modelPath
         );
         $this->modelVarName = strtolower($this->modelVarName);
 
@@ -189,11 +195,13 @@ class CreateControllerCrud extends Command
     {
         $langModelNamespacePath = explode('/', $langModelPath);
         
-        if($langModelNamespacePath > 1){
+        if ($langModelNamespacePath > 1) {
             array_pop($langModelNamespacePath);
             $langModelNamespacePath = implode('\\', $langModelNamespacePath);
-        }else
+        } else {
             $langModelNamespacePath = '';
+        }
+            
         
         $this->langModelNamespacePath = $langModelNamespacePath;
 
@@ -233,7 +241,9 @@ class CreateControllerCrud extends Command
     public function setLangModelVarName($langModelPath)
     {
         $this->langModelVarName =  preg_replace(
-            '/(.+\/)?(\w+)s$/', '$2', $langModelPath
+            '/(.+\/)?(\w+)s$/',
+            '$2',
+            $langModelPath
         );
         $this->langModelVarName = strtolower($this->langModelVarName);
 
@@ -318,8 +328,8 @@ class CreateControllerCrud extends Command
         $this->modelPath = $this->option('model');
 
         $this->crudType = $this->choice(
-            'Choice a crud process type', 
-            ['modal', 'advanced', 'all'], 
+            'Choice a crud process type',
+            ['modal', 'advanced', 'all'],
             0
         );
 
@@ -329,21 +339,22 @@ class CreateControllerCrud extends Command
             $imgConfirm = $this->confirm(
                 'Do you wish to add image processes?'
             );
-        }else
+        } else {
             $imgConfirm = false;
+        }
 
-        if($imgConfirm || !$isModal){
-
+        if ($imgConfirm || !$isModal) {
             $imgModelPath = $this->ask(
                 'Please enter a image model name?',
                 'Images'
             );
             $this->setImgModelPath($imgModelPath);
 
-            if($this->crudType !== 'advanced'){
-
+            if ($this->crudType !== 'advanced') {
                 $defaultRules = preg_replace(
-                    '/(.+\/)?(\w+)$/', '$1Update$2Post', $imgModelPath
+                    '/(.+\/)?(\w+)$/',
+                    '$1Update$2Post',
+                    $imgModelPath
                 );
 
                 $imgReqRules = $this->ask(
@@ -354,21 +365,23 @@ class CreateControllerCrud extends Command
             }
         }
 
-        if (!$this->modelPath)
+        if (!$this->modelPath) {
             $this->modelPath = $this->ask(
                 'Please enter a model name?'
             );
+        }
 
-        if (!$this->modelPath){
+        if (!$this->modelPath) {
             $this->error('Model name is entered empty');
             exit();
-        }else{
+        } else {
             /*Field Names*/
             $this->fieldIDName = $this->ask(
                 'Please enter a unique id name : ',
                 'id'
             );
-            do{
+
+            do {
                 $field['name'] = $this->ask(
                     'Please enter a field name : ',
                     'exit'
@@ -376,9 +389,8 @@ class CreateControllerCrud extends Command
 
                 $isContinue = $field['name'] !== 'exit';
 
-                if ($isContinue){
+                if ($isContinue) {
                     if (!empty($field['name'])) {
-
                         $field['type'] = $this->choice(
                             'Please enter a input type for field name : ',
                             ['text', 'date', 'hidden'],
@@ -386,13 +398,11 @@ class CreateControllerCrud extends Command
                         );
                         
                         $this->addFields[] = $field;
-
-                    }else{
+                    } else {
                         $this->error('Field name entered empty');
                     }
                 }
-
-            }while($isContinue);
+            } while ($isContinue);
 
             if (count($this->addFields) < 1) {
                 $this->error('Field names must be greather than 0');
@@ -406,7 +416,6 @@ class CreateControllerCrud extends Command
             );
 
             if ($isLangFields) {
-
                 $this->langModelPath = $this->ask(
                     'Please enter a language model name?',
                     $this->modelPath.'Lang'
@@ -423,7 +432,7 @@ class CreateControllerCrud extends Command
                     'id'
                 );
 
-                do{
+                do {
                     $langField['name'] = $this->ask(
                         'Please enter a language field name : ',
                         'exit'
@@ -431,7 +440,7 @@ class CreateControllerCrud extends Command
 
                     $isContinue = $langField['name'] !== 'exit';
 
-                    if ($isContinue){
+                    if ($isContinue) {
                         $langField['type'] = $this->choice(
                             'Please enter a input type for '.
                             'language field name : ',
@@ -441,8 +450,7 @@ class CreateControllerCrud extends Command
 
                         $this->addLangFields[] = $langField;
                     }
-
-                }while($isContinue);
+                } while ($isContinue);
 
                 if (count($this->addLangFields) < 1) {
                     $this->error('Language field names must be greather than 0');
@@ -460,7 +468,7 @@ class CreateControllerCrud extends Command
             ->setLangModelUsePath($this->langModelPath);
         }
         
-        $outputs = $this->outputFiles();        
+        $outputs = $this->outputFiles();
 
         $this->writeFiles($outputs);
         $this->writeRequestRuleFiles();
@@ -491,20 +499,17 @@ class CreateControllerCrud extends Command
                 "(indeed route names added to route file) \n"
         ];
 
-        if($this->imgModelName){
-            $filesAdded[] = 
-                "app/config/imageFilters.php ".
-                    "(Default filtre settings added within file)\n";
+        if ($this->imgModelName) {
+            $filesAdded[] = "app/config/imageFilters.php ".
+                            "(Default filtre settings added within file)\n";
             
-            if($this->crudType !== 'advanced'){
-                $filesAdded[] = 
-                    "app/Http/Request/{$this->imgReqRules}.php\n";
+            if ($this->crudType !== 'advanced') {
+                $filesAdded[] = "app/Http/Request/{$this->imgReqRules}.php\n";
             }
         }
 
-        if($this->crudType === 'all'){
-            $filesAdded[] = 
-                "app/Http/Request/{$this->advancedReqRules}.php\n";
+        if ($this->crudType === 'all') {
+            $filesAdded[] = "app/Http/Request/{$this->advancedReqRules}.php\n";
         }
 
         foreach ($filesAdded as $fileAdded) {
@@ -517,8 +522,7 @@ class CreateControllerCrud extends Command
     {
         $modelPath = app_path('Models/'.$path.'.php');
         
-        if(!is_file($modelPath) && $path){
-
+        if (!is_file($modelPath) && $path) {
             Artisan::call('make:model', [
                 'name' => 'Models/'.$path,
             ]);
@@ -535,12 +539,11 @@ class CreateControllerCrud extends Command
             'ModelsRepository/'.$this->modelPath.'Repository.php'
         );
         
-        if(!is_file($modelRepoPath) && $this->modelPath){
-            
+        if (!is_file($modelRepoPath) && $this->modelPath) {
             $modelPrefix = $this->convertUseToPrefix($this->modelUsePath);
             
             $repoContent = $this->getTemp(
-                'ModelTemps/ModelRepoTemp', 
+                'ModelTemps/ModelRepoTemp',
                 [
                     'modelPrefix' => $modelPrefix,
                     'modelName' => $this->modelName,
@@ -561,8 +564,8 @@ class CreateControllerCrud extends Command
         $reqRulesPath = app_path(
             'Http/Requests/'.$this->reqRules.'.php'
         );
-        if(!is_file($reqRulesPath)
-            && $this->reqRules){
+        if (!is_file($reqRulesPath)
+            && $this->reqRules) {
             Artisan::call('make:request', [
                 'name' => $this->reqRules,
             ]);
@@ -571,8 +574,8 @@ class CreateControllerCrud extends Command
         $advancedReqRulesPath = app_path(
             'Http/Requests/'.$this->advancedReqRules.'.php'
         );
-        if(!is_file($advancedReqRulesPath)
-            && $this->advancedReqRules){
+        if (!is_file($advancedReqRulesPath)
+            && $this->advancedReqRules) {
             Artisan::call('make:request', [
                 'name' => $this->advancedReqRules,
             ]);
@@ -582,8 +585,8 @@ class CreateControllerCrud extends Command
             'Http/Requests/'.$this->imgReqRules.'.php'
         );
 
-        if(!is_file($imgReqRulesPath)
-            && $this->imgReqRules){
+        if (!is_file($imgReqRulesPath)
+            && $this->imgReqRules) {
             Artisan::call('make:request', [
                 'name' => $this->imgReqRules,
             ]);
@@ -599,14 +602,14 @@ class CreateControllerCrud extends Command
 
             $imgRuleContent = preg_replace(
                 '/(.+public function rules\(\).+return\s\[)'.
-                '(.*)(\]\;.+)/s', 
-                "$1{$defaultConfig}\t\t$3", 
+                '(.*)(\]\;.+)/s',
+                "$1{$defaultConfig}\t\t$3",
                 $imgRuleContent
             );
 
             $imgRuleContent = str_replace(
-                'return false;', 
-                'return true;', 
+                'return false;',
+                'return true;',
                 $imgRuleContent
             );
 
@@ -624,8 +627,8 @@ class CreateControllerCrud extends Command
         $configContents[] = $this->componentJSContent();
         $configContents[] = $this->routeWebContent();
 
-        if($this->imgModelName){
-            $configContents[] = $this->imageFiltersContent();    
+        if ($this->imgModelName) {
+            $configContents[] = $this->imageFiltersContent();
         }
         
         return $configContents;
@@ -634,7 +637,7 @@ class CreateControllerCrud extends Command
     protected function getOpenFileContent($path)
     {
         $content = '';
-        if(is_readable($path) && filesize($path) > 0){
+        if (is_readable($path) && filesize($path) > 0) {
             $fopen = fopen($path, "r");
 
             $content = fread($fopen, filesize($path));
@@ -653,7 +656,7 @@ class CreateControllerCrud extends Command
             "\t'filter' => [],\n".
             "];";
 
-        $content = empty($content) 
+        $content = empty($content)
             ? $defaultImgFilterContent
             : $content;
 
@@ -663,8 +666,8 @@ class CreateControllerCrud extends Command
         );
             
         $content = preg_replace(
-            '/(.+\'filter\' => \[.*)(\]\,)(.*\]\;)$/s', 
-            "$1{$addFilter}\t$2$3", 
+            '/(.+\'filter\' => \[.*)(\]\,)(.*\]\;)$/s',
+            "$1{$addFilter}\t$2$3",
             $content
         );
         
@@ -688,13 +691,13 @@ class CreateControllerCrud extends Command
         $controllerPath = explode('/', $this->controllerPath);
         array_pop($controllerPath);
 
-        $controllerPath = implode('/', $controllerPath); 
-        $controllerUsePath = str_replace('/', '\\', $controllerPath); 
+        $controllerPath = implode('/', $controllerPath);
+        $controllerUsePath = str_replace('/', '\\', $controllerPath);
         $controllerPath = strtolower($controllerPath);
         $controllerPathName = str_replace('/', '.', $controllerPath);
         $controllerPathName .= '.';
         $addRoutes = $this->getTemp(
-            'RouteTemps/WebRouteTemps', 
+            'RouteTemps/WebRouteTemps',
             [
                 'modelName' => $this->modelName,
                 'modelVarName' => $this->modelVarName,
@@ -714,12 +717,12 @@ class CreateControllerCrud extends Command
             ".*->namespace\(\'?\"?$controllerUsePathPreg\'?\"?\)".
             ".*->name\(\'?\"?$controllerPathNamePreg\'?\"?\)".
             ".*->group\(function\(\)\{.*)(\}\)\;)".
-            "(.*)/s", 
+            "(.*)/s",
             "$1\n{$addRoutes}\t$2\n$3",
             $content
         );
 
-        if($pregContent === $content){
+        if ($pregContent === $content) {
             $params = [
                 'prefix' => $controllerPath,
                 'namespace' => $controllerUsePath,
@@ -727,7 +730,8 @@ class CreateControllerCrud extends Command
                 'addRoutes' => $addRoutes,
             ];
             $pregContent = $this->getTemp(
-                'RouteTemps/WebRouteGroupsTemps', $params
+                'RouteTemps/WebRouteGroupsTemps',
+                $params
             );
             $mode = 'a';
         }
@@ -744,18 +748,16 @@ class CreateControllerCrud extends Command
         $lwModelPath = strtolower($this->modelPath);
         $lwModelName = strtolower($this->modelName);
 
-        $importRequires = 
+        $importRequires =
         "import {$lwModelName}Component from ".
         "'./components/{$lwModelPath}/IndexComponent.vue';";
 
-
-        $exportComponents = 
+        $exportComponents =
         "\t'{$lwModelName}-component': ".
         "{$lwModelName}Component,";
 
         if ($this->crudType !== 'modal') {
-
-            $importRequires .= 
+            $importRequires .=
 
             "\nimport {$lwModelName}CreateAdvancedComponent from ".
             "'./components/{$lwModelPath}/".
@@ -766,7 +768,7 @@ class CreateControllerCrud extends Command
             "EditAdvancedComponent.vue';";
 
 
-            $exportComponents .= 
+            $exportComponents .=
 
             "\n\t'{$lwModelName}-create-advanced-component': ".
             "{$lwModelName}CreateAdvancedComponent,".
@@ -778,7 +780,7 @@ class CreateControllerCrud extends Command
         $path = resource_path('js/components.js');
         $content = '';
 
-        if(is_readable($path) && filesize($path) > 0){
+        if (is_readable($path) && filesize($path) > 0) {
             $componentsJS = fopen($path, "r");
 
             $content = fread($componentsJS, filesize($path));
@@ -788,7 +790,7 @@ class CreateControllerCrud extends Command
 
         $content = preg_replace(
             '/(import.+\;\n)(\nexport.+\,\n)/s',
-            "$1$importRequires\n$2$exportComponents\n", 
+            "$1$importRequires\n$2$exportComponents\n",
             $content
         );
 
@@ -806,7 +808,6 @@ class CreateControllerCrud extends Command
     protected function writeFiles($outputs)
     {
         foreach ($outputs as $output) {
-
             $mode = $output['mode'] ?? 'w';
 
             $this->writeNonexistentDir($output['path']);
@@ -817,7 +818,6 @@ class CreateControllerCrud extends Command
             
             fclose($controllerClass);
         }
-        
     }
 
     protected function writeNonexistentDir($path)
@@ -827,10 +827,9 @@ class CreateControllerCrud extends Command
 
         $dir = "";
         foreach ($pathArr as $dirName) {
-            
             $dir .= "/{$dirName}";
 
-            if(!is_dir($dir)){
+            if (!is_dir($dir)) {
                 mkdir($dir);
             }
         }
@@ -843,7 +842,7 @@ class CreateControllerCrud extends Command
         $outputs = array_merge($outputs, $this->viewVueTemp());
         
         $outputs = array_merge(
-            $outputs, 
+            $outputs,
             $this->configFilesContents()
         );
 
@@ -935,13 +934,13 @@ class CreateControllerCrud extends Command
                 break;
         }
 
-        if($this->imgModelName){
+        if ($this->imgModelName) {
             $tmpFileNames['ImagesTemp'] = 'modelVarName';
             $tmpFileNames['ImagesFormTemp'] = '';
         }
 
         $diffVueTmp = $this->getDifferentTemps(
-            $tmpFileNames, 
+            $tmpFileNames,
             [
                 'fromPath' => 'ViewVueTemps',
                 'toPath' => resource_path("js/components/"),
@@ -967,10 +966,8 @@ class CreateControllerCrud extends Command
         $lwModelPath = strtolower($this->modelPath);
 
         foreach ($tmpNames as $tmpKey => $tmpVal) {
-
             $params = [];
-            if($tmpVal){
-
+            if ($tmpVal) {
                 $paramArr = explode('|', trim($tmpVal));
 
                 foreach ($paramArr as $paramVal) {
@@ -980,14 +977,17 @@ class CreateControllerCrud extends Command
             }
             
             $content = $this->getTemp(
-                $pathInfo['fromPath'].'/'.$tmpKey, $params
+                $pathInfo['fromPath'].'/'.$tmpKey,
+                $params
             );
 
             $ext = '';
             switch ($pathInfo['extension']) {
                 case 'blade':
                     $fileName = str_replace(
-                        'Temp', '', $tmpKey
+                        'Temp',
+                        '',
+                        $tmpKey
                     );
                     $fileName = strtolower($fileName);
                     $ext = 'php';
@@ -995,7 +995,9 @@ class CreateControllerCrud extends Command
                 
                 default:
                     $fileName = str_replace(
-                        'Temp', 'Component', $tmpKey
+                        'Temp',
+                        'Component',
+                        $tmpKey
                     );
                     $ext = 'vue';
                     break;
@@ -1024,7 +1026,7 @@ class CreateControllerCrud extends Command
                 "Http/Controllers/{$this->controllerPath}.php"
             ),
         ];
-    }    
+    }
 
     protected function classFunc()
     {
@@ -1117,19 +1119,19 @@ class CreateControllerCrud extends Command
 
         switch ($this->crudType) {
             case 'modal':
-                $tmpFileNames = array_merge($tmpFileNames,$modalTmp);
+                $tmpFileNames = array_merge($tmpFileNames, $modalTmp);
                 break;
 
             case 'advanced':
-                $tmpFileNames = array_merge($tmpFileNames,$advancedTmp);
+                $tmpFileNames = array_merge($tmpFileNames, $advancedTmp);
                 break;
             
             case 'all':
-                $tmpFileNames = array_merge($tmpFileNames,$allTmp);
+                $tmpFileNames = array_merge($tmpFileNames, $allTmp);
                 break;
         }
 
-        if($this->crudType !== 'modal'){
+        if ($this->crudType !== 'modal') {
             $tmpFileNames = array_merge($tmpFileNames, [
                 'GetImagesFunc' => 'modelName|modelVarName',
                 'UpdateImagesFunc' => '
@@ -1143,7 +1145,7 @@ class CreateControllerCrud extends Command
         }
 
         $content .= $this->getAllTemps(
-            $tmpFileNames, 
+            $tmpFileNames,
             'ControllerClassTemps'
         );
 
@@ -1156,10 +1158,8 @@ class CreateControllerCrud extends Command
     {
         $tmp = '';
         foreach ($tmpFileNames as $tmpKey => $tmpVal) {
-
             $params = [];
-            if($tmpVal){
-
+            if ($tmpVal) {
                 $paramArr = explode('|', trim($tmpVal));
 
                 foreach ($paramArr as $paramVal) {
@@ -1184,18 +1184,18 @@ class CreateControllerCrud extends Command
     {
         $contUsePath = explode('/', $this->controllerPath);
         
-        if(count($contUsePath) > 1){
+        if (count($contUsePath) > 1) {
             array_pop($contUsePath);
             $contUsePath = implode('\\', $contUsePath);
 
             $namespace = "namespace App\Http\Controllers\\";
             $namespace .= "{$contUsePath};\n\n";
-        }else{
+        } else {
             $namespace = "namespace App\Http\Controllers;\n\n";
         }
 
         return $namespace;
-    }    
+    }
 
     private function requireFiles()
     {
@@ -1213,7 +1213,7 @@ class CreateControllerCrud extends Command
                 break;
         }
 
-        if($this->imgModelName){
+        if ($this->imgModelName) {
             $imgReqRules = $this->getUsePath($this->imgReqRules);
             $imgModelPath = $this->getUsePath($this->imgModelPath);
 
